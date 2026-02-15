@@ -1,5 +1,6 @@
 import pandas as pd
 import os
+import json
 import re
 from datetime import datetime
 
@@ -49,4 +50,5 @@ if os.path.exists(path_input):
     else:
         print(f"Error: Kolom 'Details' tidak ditemukan. Kolom yang ada: {df.columns.tolist()}")
 else:
+
     print(f"Error: File {path_input} tidak ditemukan!")
