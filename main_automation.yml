@@ -37,7 +37,7 @@ jobs:
 
       - name: Run ETL Script
         # Ganti 'main.py' dengan nama file script-mu jika beda
-        run: python main.py 
+        run: python3 main_scheduler.py 
 
       - name: Save Evidence (Screenshots/Logs)
         if: always() # Tetap dijalankan meskipun script-mu error
