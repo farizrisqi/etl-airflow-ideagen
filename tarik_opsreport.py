@@ -49,7 +49,7 @@ def upload_ke_sheets(file_path):
     print(f"🚀 Data baru berhasil masuk ke sheet pada: {datetime.now()}")
 
 def run(playwright: Playwright) -> None:
-    browser = playwright.chromium.launch(headless=False)
+    browser = playwright.chromium.launch(headless=True)
     context = browser.new_context()
     page = context.new_page()
     page.goto("https://ops-report.lionair.com/ops-report/index.php/auth")
