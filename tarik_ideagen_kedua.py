@@ -15,7 +15,7 @@ ideagen_pass = os.getenv('IDEAGEN_PW')
 tgl_str = sekarang.strftime("%d%m%y")
 
 def run(playwright: Playwright) -> None:
-    browser = playwright.chromium.launch(headless=False)
+    browser = playwright.chromium.launch(headless=True)
     context = browser.new_context()
     page = context.new_page()
     page.goto("https://lionairgroup.gaelenlighten.com")
