@@ -3,7 +3,7 @@ name: Daily Playwright Automation
 on:
   schedule:
     # 01:00 UTC = 08:00 WIB (Senin - Minggu)
-    - cron: '0 1 * * *'
+    - cron: '0 19 * * *'
   workflow_dispatch: # Supaya bisa tes klik tombol "Run" kapan saja
 
 jobs:
