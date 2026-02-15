@@ -5,6 +5,8 @@ from datetime import datetime
 import re
 from playwright.sync_api import Playwright, sync_playwright, expect
 
+opsreport_user = os.getenv('OPSREPORT_ID')
+opsreport_pass = os.getenv('OPSREPORT_PW')
 
 def upload_ke_sheets(file_path):
     # 1. SETUP API (Sama seperti sebelumnya)
@@ -52,9 +54,9 @@ def run(playwright: Playwright) -> None:
     page.goto("https://ops-report.lionair.com/ops-report/index.php/auth")
     page.locator("#exampleInputID").click()
     page.locator("#exampleInputID").click()
-    page.locator("#exampleInputID").fill("fda.csq")
+    page.locator("#exampleInputID").fill(opsreport_user)
     page.get_by_role("textbox", name="Password").click()
-    page.get_by_role("textbox", name="Password").fill("fda.csq")
+    page.get_by_role("textbox", name="Password").fill(opsreport_pass)
     page.get_by_role("button", name="Log In").click()
     page.get_by_role("listitem").filter(has_text="Leg Complement").click()
     page.get_by_role("link", name="Leg Complement").click()
