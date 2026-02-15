@@ -8,8 +8,13 @@ from playwright.sync_api import Playwright, sync_playwright, expect
 
 def upload_ke_sheets(file_path):
     # 1. SETUP API (Sama seperti sebelumnya)
-    scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
-    creds = ServiceAccountCredentials.from_json_keyfile_name('credentials.json', scope)
+    # Ambil teks JSON dari Secret GitHub
+    google_json_teks = os.getenv('GSPREAD_JSON')
+    google_json_dict = json.loads(google_json_teks)
+
+    # Login pake dictionary (bukan file)
+    scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
+    creds = ServiceAccountCredentials.from_json_keyfile_dict(google_json_dict, scope)
     client = gspread.authorize(creds)
     
     sheet_id = "1axm9YL2jok_JBd-LDSPbjCrTQISZ9lTU3G8lL74IIMg"
