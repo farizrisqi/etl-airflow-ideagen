@@ -29,8 +29,7 @@ jobs:
       - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install playwright pandas
-          # Tambahkan library lain jika script-mu butuh (misal: openpyxl)
+          pip install -r requirements.txt
 
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps chromium
