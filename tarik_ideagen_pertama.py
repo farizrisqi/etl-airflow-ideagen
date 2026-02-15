@@ -1,6 +1,8 @@
 import re
 from playwright.sync_api import Playwright, sync_playwright, expect
 
+ideagen_user = os.getenv('IDEAGEN_ID')
+ideagen_pass = os.getenv('IDEAGEN_PW')
 
 def run(playwright: Playwright) -> None:
     browser = playwright.chromium.launch(headless=False)
@@ -10,8 +12,8 @@ def run(playwright: Playwright) -> None:
     page.goto("https://lionairgroup.gaelenlighten.com")
 
          # 2. Isi username & password
-    page.fill("#username", "risqi")
-    page.fill("#password", "Sylvia123")
+    page.fill("#username", ideagen_user)
+    page.fill("#password", ideagen_pass)
     page.wait_for_timeout(1000)
     # 3. Klik tombol login
     page.get_by_role("button", name="Login").click()
