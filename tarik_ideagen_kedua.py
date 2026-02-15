@@ -7,6 +7,9 @@ import os
 # 1. Ambil waktu sekarang
 sekarang = datetime.now()
 
+ideagen_user = os.getenv('IDEAGEN_ID')
+ideagen_pass = os.getenv('IDEAGEN_PW')
+
 # 2. Format tanggal sesuai keinginan (DDMMYY -> 090226)
 # %d = Day, %m = Month, %y = Year (2 digit)
 tgl_str = sekarang.strftime("%d%m%y")
@@ -18,8 +21,8 @@ def run(playwright: Playwright) -> None:
     page.goto("https://lionairgroup.gaelenlighten.com")
 
          # 2. Isi username & password
-    page.fill("#username", "risqi")
-    page.fill("#password", "Sylvia123")
+    page.fill("#username", ideagen_user)
+    page.fill("#password", ideagen_pass)
     page.wait_for_timeout(1000)
     # 3. Klik tombol login
     page.get_by_role("button", name="Login").click()
