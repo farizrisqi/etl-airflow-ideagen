@@ -16,6 +16,7 @@ jobs:
       IDEAGEN_PW: ${{ secrets.IDEAGEN_PW }}
       OPSREPORT_ID: ${{ secrets.OPSREPORT_ID }}
       OPSREPORT_PW: ${{ secrets.OPSREPORT_PW }}
+      GSPREAD_JSON: ${{ secrets.GSPREAD_JSON }}
 
     steps:
       - name: Checkout Repository
