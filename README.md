@@ -34,5 +34,4 @@ The cleaned, processed, and reviewed data is finally distributed into two contin
 
 ## 🛠️ Core Tech Stack
 * **Web Scraping & Automation:** Playwright
-* **Data Engineering (ETL):** Python (Pandas)
-* **Machine Learning:** NLP (Natural Language Processing)
+* **Data Engineering (ETL):** Python (Pandas), Apache Airflow
