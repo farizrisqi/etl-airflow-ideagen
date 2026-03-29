@@ -1,5 +1,7 @@
 # Project Showcase: Playwright Web Scraping, Dual-Stream ETL & Automation Pipeline
 
+> **⚠️ DISCLAIMER:** *Code not fully shared due to data restriction policy and non-disclosure agreement (NDA). The repository contains a redacted/structural overview of the project for portfolio purposes.*
+
 ## 📌 Project Description
 This project is an end-to-end solution for data extraction, processing, and automation. Focusing heavily on **Big Data, ETL ,and  Data Engineering**, this pipeline is designed to automatically retrieve data from internal systems, process it through a Dual-Stream ETL pipeline, and distribute it for both administrative automation (RPA), text-based Artificial Intelligence processing (NLP) and other internal team purposes
 
