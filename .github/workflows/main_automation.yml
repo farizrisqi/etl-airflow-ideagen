@@ -2,15 +2,13 @@ name: Daily Playwright Automation
 
 on:
   schedule:
-    # 01:00 UTC = 08:00 WIB (Senin - Minggu)
     - cron: '0 22 * * 0-4'
-  workflow_dispatch: # Supaya bisa tes klik tombol "Run" kapan saja
+  workflow_dispatch: 
 
 jobs:
   automation-job:
     runs-on: ubuntu-latest
     
-    # Bagian ini menghubungkan "Lemari Rahasia" GitHub ke script Python
     env:
       IDEAGEN_ID: ${{ secrets.IDEAGEN_ID }}
       IDEAGEN_PW: ${{ secrets.IDEAGEN_PW }}
@@ -36,11 +34,10 @@ jobs:
         run: npx playwright install --with-deps chromium
 
       - name: Run ETL Script
-        # Ganti 'main.py' dengan nama file script-mu jika beda
         run: python3 main_scheduler.py 
 
       - name: Save Evidence (Screenshots/Logs)
-        if: always() # Tetap dijalankan meskipun script-mu error
+        if: always() 
         uses: actions/upload-artifact@v4
         with:
           name: hasil-automation
