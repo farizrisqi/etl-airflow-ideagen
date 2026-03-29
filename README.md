@@ -34,4 +34,3 @@ The cleaned, processed, and reviewed data is finally distributed into two contin
 * **Web Scraping & Automation:** Playwright
 * **Data Engineering (ETL):** Python (Pandas)
 * **Machine Learning:** NLP (Natural Language Processing)
-* **Database Management:** RDBMS / NoSQL (Depending on local implementation)
