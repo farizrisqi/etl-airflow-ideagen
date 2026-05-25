@@ -1,14 +1,14 @@
-name: Daily Playwright Automation
+name: Daily ETL Automation
 
 on:
   schedule:
-    - cron: '0 22 * * 0-4'
-  workflow_dispatch: 
+    - cron: '0 22 * * 0-4'  # 05:00 WIB Senin-Jumat
+  workflow_dispatch:
 
 jobs:
   automation-job:
     runs-on: ubuntu-latest
-    
+
     env:
       IDEAGEN_ID: ${{ secrets.IDEAGEN_ID }}
       IDEAGEN_PW: ${{ secrets.IDEAGEN_PW }}
@@ -33,15 +33,13 @@ jobs:
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps chromium
 
-      - name: Run ETL Script
-        run: python3 main_scheduler.py 
+      - name: Run ETL Pipeline
+        run: python3 src/utils/main_scheduler.py
 
-      - name: Save Evidence (Screenshots/Logs)
-        if: always() 
+      - name: Save Screenshots
+        if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: hasil-automation
-          path: |
-            screenshots/
-            logs/
+          name: debug-screenshots
+          path: /tmp/debug_*.png
           retention-days: 7

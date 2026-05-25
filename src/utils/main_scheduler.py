@@ -1,39 +1,41 @@
-#This one is used when we want to run the whole process of ETL 
-# in one click, so we don't have to run each script one by one. 
-# We can just run this main_scheduler.py 
-# and it will run all the scripts in the correct order 
-# with the correct timing.
-
-#This one is used when we want run dags without using Airflow, 
-# so we can just run this main_scheduler.py
-
 import subprocess
 import time
-import sys 
+import sys
+import os
 from datetime import datetime
 
-def run_script(script_name):
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+IDEAGEN_DIR = os.path.join(BASE_DIR, "..", "ideagen")
+BI_FARIZ_DIR = os.path.join(BASE_DIR, "..", "bi_fariz")
+BI_SRM_DIR   = os.path.join(BASE_DIR, "..", "bi_srm")
+
+def run_script(script_name, cwd):
     timestamp = datetime.now().strftime("%H:%M:%S")
     print(f"[{timestamp}] --- Memulai {script_name} ---")
-    
-    # PERBAIKAN: Menggunakan sys.executable agar otomatis 
-    # menggunakan 'python3' sesuai lingkungan terminalmu
-    result = subprocess.run([sys.executable, script_name])
-    
+    result = subprocess.run([sys.executable, script_name], cwd=cwd)
     if result.returncode == 0:
-        print(f"--- {script_name} Berhasil Selesai ---")
+        print(f"--- {script_name} Berhasil ---")
     else:
-        print(f"--- {script_name} Berhenti dengan Error ---")
+        print(f"--- {script_name} Error (return code {result.returncode}) ---")
 
-print("\nJalankan Project ETL untuk menarik Report Terbaru\n")
-print("\nTarik Data OPS Report\n")
-run_script("tarik_opsreport.py")
-print("\nTarik Data Ideagen Report\n")
-run_script("tarik_ideagen_pertama.py")
-print("\nMenunggu 10 menit agar filenya muncul...\n")
+print("\n=== ETL Pipeline Start ===\n")
+
+run_script("opsreport_step_1.py", IDEAGEN_DIR)
+run_script("ideagen_step_1.py",   IDEAGEN_DIR)
+
+print("\nMenunggu 10 menit agar file muncul...\n")
 time.sleep(600)
-run_script("tarik_ideagen_kedua.py")
-print("\nFile sudah terdownload, lanjut proses Transform data\n")
-run_script("tarik_ideagen_ketiga.py")
-print("\nFile sudah terdownload, lanjut proses Load data ke CMR \n")
-run_script("tarik_ideagen_keempat.py")
+
+run_script("ideagen_step_2.py", IDEAGEN_DIR)
+run_script("ideagen_step_3.py", IDEAGEN_DIR)
+run_script("ideagen_step_4.py", IDEAGEN_DIR)
+
+run_script("step1.py", BI_FARIZ_DIR)
+run_script("step2.py", BI_FARIZ_DIR)
+run_script("step3.py", BI_FARIZ_DIR)
+
+run_script("step1.py", BI_SRM_DIR)
+run_script("step2.py", BI_SRM_DIR)
+run_script("step3.py", BI_SRM_DIR)
+
+print("\n=== ETL Pipeline Selesai ===\n")
