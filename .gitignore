@@ -1,0 +1,30 @@
+# Environment variables - JANGAN PERNAH DIUPLOAD
+.env
+.env.*
+
+# Google credentials
+credentials.json
+*.json
+!package.json
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+*.egg-info/
+
+# Airflow
+logs/
+airflow.db
+airflow-webserver.pid
+
+# Downloads / temp files
+src/bi_fariz/Downloads_SRM/
+src/*/Downloads_*/
+*.gsf-save-*
+
+# OS
+.DS_Store
+Thumbs.db

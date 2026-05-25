@@ -1,3 +1,12 @@
+#This one is used when we want to run the whole process of ETL 
+# in one click, so we don't have to run each script one by one. 
+# We can just run this main_scheduler.py 
+# and it will run all the scripts in the correct order 
+# with the correct timing.
+
+#This one is used when we want run dags without using Airflow, 
+# so we can just run this main_scheduler.py
+
 import subprocess
 import time
 import sys 

@@ -1,0 +1,98 @@
+version: '3.8'
+
+networks:
+  pipeline-network:
+    driver: bridge
+
+services:
+
+  # ── AIRFLOW POSTGRES ──────────────────────────────
+  airflow-postgres:
+    image: postgres:13
+    container_name: airflow_postgres
+    environment:
+      - POSTGRES_USER=airflow
+      - POSTGRES_PASSWORD=airflow
+      - POSTGRES_DB=airflow
+    networks:
+      - pipeline-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U airflow"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # ── CDC POSTGRES (source data) ────────────────────
+  cdc-postgres:
+    image: quay.io/debezium/postgres:13
+    container_name: postgres_db
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=inventory
+    ports:
+      - "5432:5432"
+    networks:
+      - pipeline-network
+
+  # ── AIRFLOW WEBSERVER ─────────────────────────────
+  airflow-webserver:
+    build: .
+    restart: always
+    depends_on:
+      airflow-postgres:
+        condition: service_healthy
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./src:/opt/airflow/src
+      - ./requirements.txt:/opt/airflow/requirements.txt
+    environment:
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@airflow-postgres/airflow
+      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+      - AIRFLOW__CORE__LOAD_EXAMPLES=False
+      - AIRFLOW__WEBSERVER__SECRET_KEY=supersecretkey123
+      - AIRFLOW__CORE__DEFAULT_TASK_RETRIES=0
+      - AIRFLOW__SCHEDULER__MIN_FILE_PROCESS_INTERVAL=30
+      - AIRFLOW__SCHEDULER__DAG_DIR_LIST_INTERVAL=30
+      - AIRFLOW__CORE__PARALLELISM=8
+      - AIRFLOW__CORE__MAX_ACTIVE_TASKS_PER_DAG=8
+      - IDEAGEN_ID=${IDEAGEN_ID}
+      - IDEAGEN_PW=${IDEAGEN_PW}
+      - OPSREPORT_ID=${OPSREPORT_ID}
+      - OPSREPORT_PW=${OPSREPORT_PW}
+      - GSPREAD_JSON=${GSPREAD_JSON}
+    ports:
+      - "8080:8080"
+    command: webserver
+    networks:
+      - pipeline-network
+
+  # ── AIRFLOW SCHEDULER ─────────────────────────────
+  airflow-scheduler:
+    build: .
+    restart: always
+    depends_on:
+      airflow-postgres:
+        condition: service_healthy
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./src:/opt/airflow/src
+      - ./requirements.txt:/opt/airflow/requirements.txt
+    environment:
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@airflow-postgres/airflow
+      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+      - AIRFLOW__CORE__LOAD_EXAMPLES=False
+      - AIRFLOW__WEBSERVER__SECRET_KEY=supersecretkey123
+      - AIRFLOW__CORE__DEFAULT_TASK_RETRIES=0
+      - AIRFLOW__SCHEDULER__MIN_FILE_PROCESS_INTERVAL=30
+      - AIRFLOW__SCHEDULER__DAG_DIR_LIST_INTERVAL=30
+      - AIRFLOW__CORE__PARALLELISM=8
+      - AIRFLOW__CORE__MAX_ACTIVE_TASKS_PER_DAG=8
+      - IDEAGEN_ID=${IDEAGEN_ID}
+      - IDEAGEN_PW=${IDEAGEN_PW}
+      - OPSREPORT_ID=${OPSREPORT_ID}
+      - OPSREPORT_PW=${OPSREPORT_PW}
+      - GSPREAD_JSON=${GSPREAD_JSON}
+    command: scheduler
+    networks:
+      - pipeline-network

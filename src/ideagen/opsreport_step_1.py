@@ -52,6 +52,8 @@ def upload_ke_sheets(file_path):
 def run(playwright: Playwright) -> None:
     browser = playwright.chromium.launch(headless=True)
     context = browser.new_context()
+    context.set_default_timeout(600000)
+    context.set_default_navigation_timeout(600000)
     page = context.new_page()
     page.goto("https://ops-report.lionair.com/ops-report/index.php/auth")
     page.locator("#exampleInputID").click()
@@ -59,31 +61,42 @@ def run(playwright: Playwright) -> None:
     page.locator("#exampleInputID").fill(opsreport_user)
     page.get_by_role("textbox", name="Password").click()
     page.get_by_role("textbox", name="Password").fill(opsreport_pass)
+    page.wait_for_timeout(5000)
     page.get_by_role("button", name="Log In").click()
-    page.get_by_role("listitem").filter(has_text="Leg Complement").click()
-    page.get_by_role("link", name="Leg Complement").click()
-    page.get_by_role("button", name="Retrieve").click()
-    with page.expect_download() as download_info:
-        # Klik tombol yang memicu download
-        page.get_by_role("button", name="Excel").click()
+    # --- MULAI DOKUMENTASI DEBUGGING ---
+    print("⏳ Menunggu halaman dashboard loading setelah login...")
+    # Tunggu sampai loading indikator atau network selesai (opsional tapi disarankan)
+    page.wait_for_load_state("networkidle") 
     
-    # Menunggu proses download selesai dan mengambil objek download
-    download = download_info.value
-
-    # --- LANGKAH PENTING: Pindahkan dari folder temp ke folder kerja ---
-    nama_file = "data_lion_air.xlsx"
-    download.save_as(nama_file) 
+    print(f"🌐 Berada di URL: {page.url}")
     
-    print(f"✅ Muatan aman! Tersimpan di folder WSL kamu sebagai: {nama_file}")
-    
-    # Tutup halaman setelah selesai
-    page.close()
+    # Ambil screenshot full page dan simpan di folder yang sama
+    screenshot_path = "debug_sebelum_klik_menu.png"
+    page.screenshot(path=screenshot_path, full_page=True)
+    print(f"📸 Screenshot disimpan sebagai: {screenshot_path}. Silakan cek gambar ini!")
+    # --- SELESAI DOKUMENTASI DEBUGGING ---
+    # Lanjut ke proses klik
+    try:
+        page.get_by_role("listitem").filter(has_text="Leg Complement").click()
+        page.get_by_role("link", name="Leg Complement").click()
+        page.get_by_role("button", name="Retrieve").click()
+        with page.expect_download() as download_info:
+            page.get_by_role("button", name="Excel").click()        
+        download = download_info.value
+        nama_file = "data_lion_air.xlsx"
+        download.save_as(nama_file) 
+        print(f"✅ Muatan aman! Tersimpan di folder sebagai: {nama_file}")
 
-
-    # ---------------------
-    context.close()
-    browser.close()
-
+    except Exception as e:
+        # Kalau gagal klik, ambil screenshot saat error terjadi
+        page.screenshot(path="debug_error_saat_klik.png", full_page=True)
+        print(f"❌ Error terjadi: {e}")
+        print("📸 Screenshot saat error disimpan sebagai: debug_error_saat_klik.png")
+        raise # Munculkan errornya lagi ke Airflow
+    finally:
+        page.close()
+        context.close()
+        browser.close()
 
 with sync_playwright() as playwright:
     run(playwright)

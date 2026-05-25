@@ -17,6 +17,8 @@ tgl_str = sekarang.strftime("%d%m%y")
 def run(playwright: Playwright) -> None:
     browser = playwright.chromium.launch(headless=True)
     context = browser.new_context()
+    context.set_default_timeout(600000)
+    context.set_default_navigation_timeout(600000)
     page = context.new_page()
     page.goto("https://lionairgroup.gaelenlighten.com")
 
@@ -70,10 +72,6 @@ def run(playwright: Playwright) -> None:
     # --- MODIFIKASI SELESAI ---
     print(f"Download selesai! File tersimpan di: {file_path}")
     
-    # Simpan file ke folder project dengan nama asli
-    download.save_as(download.suggested_filename)
-    print(f"File disimpan sebagai: {download.suggested_filename}")
-
     # Cleanup
     page1.close()
     context.close()

@@ -9,6 +9,8 @@ ideagen_pass = os.getenv('IDEAGEN_PW')
 def run(playwright: Playwright) -> None:
     browser = playwright.chromium.launch(headless=True)
     context = browser.new_context()
+    context.set_default_timeout(600000)
+    context.set_default_navigation_timeout(600000)
     page = context.new_page()
     
     page.goto("https://lionairgroup.gaelenlighten.com")

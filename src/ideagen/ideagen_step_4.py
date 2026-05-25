@@ -32,11 +32,11 @@ def sync_to_sheets():
         # -------------------------------------
 
         sh = gc.open_by_key(spreadsheet_id)
-        worksheet = sh.worksheet("Jan") 
+        worksheet = sh.worksheet("Fariz") 
 
         df = pd.read_csv(path_input)
         values_only = df[['Details']].values.tolist()
-
+        worksheet.batch_clear(['E2:E1000'])  # Hapus data lama di kolom E
         worksheet.update(range_name='E2', values=values_only)
         print(f"[{datetime.now().strftime('%H:%M:%S')}] SUKSES: Data diisi ke Kolom E mulai baris 2.")
 
