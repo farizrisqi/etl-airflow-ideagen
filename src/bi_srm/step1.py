@@ -3,6 +3,9 @@ import os
 from datetime import datetime
 from playwright.sync_api import Playwright, sync_playwright, expect
 
+ideagen_user = os.getenv('IDEAGEN_ID')
+ideagen_pass = os.getenv('IDEAGEN_PW')
+
 def run(playwright: Playwright) -> None:
     # --- KONFIGURASI PATH ---
     # Membuat folder 'Downloads_SRM' di lokasi script ini berada
@@ -14,12 +17,19 @@ def run(playwright: Playwright) -> None:
     browser = playwright.chromium.launch(headless=True)
     
     print("📂 Memuat context dengan session storage_state...")
-    context = browser.new_context(ignore_https_errors=True, storage_state="state.json")
+    context = browser.new_context(ignore_https_errors=True)
     context.set_default_timeout(600000)
     context.set_default_navigation_timeout(600000)
 
     page = context.new_page()
-    
+
+    print("🌐 Login ke Gaelenlighten...")
+    page.goto("https://lionairgroup.gaelenlighten.com")
+    page.fill("#username", ideagen_user)
+    page.fill("#password", ideagen_pass)
+    page.get_by_role("button", name="Login").click()
+    page.wait_for_timeout(10000)
+
     print("🌐 Menuju ke URL Gaelenlighten...")
     page.goto("https://lionairgroup.gaelenlighten.com/Home/Workspace#!/home")
     
