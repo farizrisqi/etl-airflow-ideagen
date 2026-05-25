@@ -9,7 +9,7 @@ import json
 # ==========================================
 # ⚙️ CONFIGURATION
 # ==========================================
-JSON_FILE_PATH = os.path.join("Downloads_SRM", "bi_fariz_silver_layer.json")
+JSON_FILE_PATH = os.path.join("Downloads_SRM", "bi_fariz_silver_layer.csv")
 SPREADSHEET_URL = "https://docs.google.com/spreadsheets/d/1qD_AIJ5yuLfZ4u2yb3LhiuW08PsFQ4sY-83Y8wDn_ow/edit#gid=2011887642"
 TARGET_GID = "2011887642"
 
@@ -26,7 +26,7 @@ def upload_json_to_sheets(json_path: str, spreadsheet_url: str, gid: str) -> Non
     # --- 2. EKSTRAKSI DATA ---
     print(f"[{get_time()}] 📄 Loading JSON data from {json_path}...")
     try:
-        df = pd.read_json(json_path, convert_dates=False)
+        df = pd.read_csv(json_path, dtype=str)
     except Exception as e:
         print(f"❌ [ERROR] Failed to read JSON: {e}")
         sys.exit(1)
