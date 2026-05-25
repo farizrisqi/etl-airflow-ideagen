@@ -14,9 +14,10 @@ with DAG(
     dag_id='master_dag_etl-srm',
     default_args=default_args,
     description='Automasi ETL Tarik Data OpsReport dan Ideagen',
+    schedule='30 0 * * 1-5',  # 07:30 WIB Senin-Jumat
     catchup=False,
     is_paused_upon_creation=False,
-    tags=['etl', 'scraping', 'playwright'] 
+    tags=['etl', 'scraping', 'playwright']
 ) as dag:
 
     BASE_CMD_IDEAGEN = "cd /opt/airflow/src/ideagen && python"
