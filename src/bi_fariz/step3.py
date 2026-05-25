@@ -4,16 +4,16 @@ from google.oauth2.service_account import Credentials
 import os
 import sys
 import time
+import json
 
 # ==========================================
 # ⚙️ CONFIGURATION
 # ==========================================
 JSON_FILE_PATH = os.path.join("Downloads_SRM", "bi_fariz_silver_layer.json")
-CREDENTIALS_FILE = "credentials.json"
 SPREADSHEET_URL = "https://docs.google.com/spreadsheets/d/1qD_AIJ5yuLfZ4u2yb3LhiuW08PsFQ4sY-83Y8wDn_ow/edit#gid=2011887642"
 TARGET_GID = "2011887642"
 
-def upload_json_to_sheets(json_path: str, spreadsheet_url: str, credentials_path: str, gid: str) -> None:
+def upload_json_to_sheets(json_path: str, spreadsheet_url: str, gid: str) -> None:
     def get_time(): return pd.Timestamp.now().strftime('%H:%M:%S')
 
     print(f"[{get_time()}] 🚀 Initiating Google Sheets Upload Pipeline...")
@@ -43,7 +43,8 @@ def upload_json_to_sheets(json_path: str, spreadsheet_url: str, credentials_path
             "https://www.googleapis.com/auth/spreadsheets",
             "https://www.googleapis.com/auth/drive"
         ]
-        creds = Credentials.from_service_account_file(credentials_path, scopes=scopes)
+        google_json_dict = json.loads(os.getenv('GSPREAD_JSON'))
+        creds = Credentials.from_service_account_info(google_json_dict, scopes=scopes)
         client = gspread.authorize(creds)
         
         print(f"[{get_time()}] 📡 Connecting to target Spreadsheet...")
@@ -93,4 +94,4 @@ def upload_json_to_sheets(json_path: str, spreadsheet_url: str, credentials_path
 # 🚀 MAIN EXECUTION
 # ==========================================
 if __name__ == "__main__":
-    upload_json_to_sheets(JSON_FILE_PATH, SPREADSHEET_URL, CREDENTIALS_FILE, TARGET_GID)
+    upload_json_to_sheets(JSON_FILE_PATH, SPREADSHEET_URL, TARGET_GID)
